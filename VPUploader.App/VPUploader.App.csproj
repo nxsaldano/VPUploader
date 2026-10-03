@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\VPUploader.Core\VPUploader.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Assets\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\wacotexas.ico" />
+      <Resource Include="Assets\wacotexas.ico" />
+      <None Remove="Assets\eyesfullofblossom.jpg" />
+      <Resource Include="Assets\eyesfullofblossom.jpg" />
+      <None Remove="Assets\bewear.jpg" />
+      <Resource Include="Assets\bewear.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="WPF-UI" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.local.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+    
+</Project>
