@@ -57,6 +57,10 @@ dotnet test
 
 C# · .NET 8 · WPF · [WPF-UI](https://github.com/lepoco/wpfui) · xUnit · Pinterest API v5
 
+## Acknowledgments
+
+Built with architectural guidance and code review from Claude (Anthropic).
+
 ## License
 
 MIT
