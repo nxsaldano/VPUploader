@@ -6,7 +6,9 @@
                   Icon="Assets/wacotexas.ico"
                   Loaded="Window_Loaded"
                   ExtendsContentIntoTitleBar="True"
-                  WindowBackdropType="Acrylic">
+                  WindowBackdropType="Acrylic"
+                  WindowStartupLocation="CenterScreen">
+    
 
     <Grid>
         

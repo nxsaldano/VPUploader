@@ -11,10 +11,10 @@ A Windows desktop app for uploading images to Pinterest via the Pinterest API v5
 - Board list loaded live from your Pinterest account
 - OAuth 2.0 login (one-time browser authorization, silent token refresh after that)
 - Fluent/Acrylic dark-themed UI (via [WPF-UI](https://github.com/lepoco/wpfui))
+- Right-click "Upload with VPUploader" context-menu entry for image files in Windows Explorer
 
 ## Planned / not yet implemented
 
-- Right-click "Upload to Pinterest" context-menu entry for image files in Windows Explorer
 - Pinterest app registered for Standard API access (currently Trial — uploaded pins are only visible to the authenticated account until that's approved)
 
 ## Architecture
