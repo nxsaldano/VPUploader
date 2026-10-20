@@ -2,6 +2,8 @@
 
 A Windows desktop app for uploading images to Pinterest via the Pinterest API v5, with a right-click "Upload to Pinterest" shell integration planned. Built in C# / WPF, with a fully unit-tested core that has zero network, filesystem, or browser dependencies.
 
+[— link to the repository —](https://github.com/nxsaldano/VPUploader)
+
 ![App screenshot](screenshots/screenshot1.png)
 
 ## Features
