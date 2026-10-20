@@ -15,15 +15,13 @@ A Windows desktop app for uploading images to Pinterest via the Pinterest API v5
 
 ## Planned / not yet implemented
 
-- Pinterest app registered for Standard API access (currently Trial — uploaded pins are only visible to the authenticated account until that's approved)
+- Pinterest app registered for Standard API access (currently applying for Trial, where uploaded pins will only visible to the authenticated account)
 
 ## Architecture
 
-The solution is split into three projects:
-
-- **`VPUploader.Core`** — the actual logic: OAuth flow and token refresh (`AuthService`), the Pinterest API client (`PinterestClient`), and the data models. Depends only on interfaces (`ITokenProvider`, `ITokenStore`) for its auth and storage needs, and takes an injectable `HttpClient`, rather than depending on concrete implementations directly.
-- **`VPUploader.Core.Tests`** — an xUnit test suite covering both classes above, using a fake HTTP handler, an in-memory token store, and a fake token provider. No test ever touches the real network, disk, or a browser.
-- **`VPUploader.App`** — the WPF front end (MVVM: `MainViewModel` + `MainWindow`), which wires the real implementations together.
+- **`VPUploader.Core`** — OAuth flow and token refresh (`AuthService`), the Pinterest API client (`PinterestClient`), and the data models. 
+- **`VPUploader.Core.Tests`** — xUnit test suite that uses a fake HTTP handler, in-memory token store, and a fake token provider. 
+- **`VPUploader.App`** — WPF front end.
 
 This split was a deliberate choice to make the OAuth/API logic verifiable without needing live Pinterest credentials for every test run — useful both for development and for recording the demo required for Pinterest's API access review.
 
