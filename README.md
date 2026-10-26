@@ -32,7 +32,7 @@ This split was a deliberate choice to make the OAuth/API logic verifiable withou
 **Prerequisites:** [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 1. Clone the repo
-2. Register your own app on the [Pinterest Developer portal](https://developers.pinterest.com/) and add `http://127.0.0.1:8756/callback/` as a redirect URI
+2. Register your own app on the [Pinterest Developer portal](https://developers.pinterest.com/) and add `http://localhost:8756/callback/` as a redirect URI
 3. Create `VPUploader.App/appsettings.local.json` with your own credentials:
    ```json
    {
