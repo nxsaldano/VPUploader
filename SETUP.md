@@ -53,7 +53,7 @@ these tests to pass.
 ## Wiring up the real app (unchanged from before)
 
 1. Register the app on Pinterest's developer portal (business account
-   required), add redirect URI `http://127.0.0.1:8756/callback/` exactly.
+   required), add redirect URI `http://localhost:8756/callback/` exactly.
 2. Trial access is enough to develop and test against the real API - pins
    you create work but aren't publicly visible until Standard access is
    approved (a short video-demo review).
