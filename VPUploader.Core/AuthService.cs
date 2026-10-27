@@ -9,9 +9,14 @@ namespace VPUploader.Core;
 public class AuthService : ITokenProvider
 {
     private const string AuthorizeUrl = "https://www.pinterest.com/oauth/";
-    private const string TokenUrl = "https://api.pinterest.com/v5/oauth/token";
-    private const string RedirectUri = "http://127.0.0.1:8756/callback/";
-    private const string Scopes = "boards:read,pins:read,pins:write";
+    
+    // we use different tokens for production and sandbox
+    // private const string TokenUrl = "https://api.pinterest.com/v5/oauth/token";
+    
+    private const string TokenUrl = "https://api-sandbox.pinterest.com/v5/oauth/token";
+    
+    private const string RedirectUri = "http://localhost:8756/callback/";
+    private const string Scopes = "boards:read,boards:write,pins:read,pins:write";
     
     private readonly string _clientId;
     private readonly string _clientSecret;
@@ -29,6 +34,10 @@ public class AuthService : ITokenProvider
         _http = httpClient ?? new HttpClient();
     }
 
+    public bool HasSavedLogin => _tokenStore.LoadRefreshToken() != null;
+    
+    public Task SignInAsync() => RunAuthorizationFlowAsync();
+    
     public async Task<string> GetValidAccessTokenAsync()
     {
         if (_accessToken != null && DateTimeOffset.UtcNow < _accessTokenExpiresAt)
@@ -47,8 +56,7 @@ public class AuthService : ITokenProvider
                 _tokenStore.Clear();
             }
         }
-        await RunAuthorizationFlowAsync();
-        return _accessToken!;
+        throw new InvalidOperationException("Not signed in to Pinterest. Click 'Connect to Pinterest' first.");
     }
 
     private async Task RunAuthorizationFlowAsync()

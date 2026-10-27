@@ -35,7 +35,7 @@ public partial class App : Application
                 clientSecret: pinterestConfig.GetProperty("ClientSecret").GetString()!);
 
             var pinterestClient = new PinterestClient(authService);
-            var viewModel = new MainViewModel(pinterestClient);
+            var viewModel = new MainViewModel(pinterestClient, authService);
             var mainWindow = new MainWindow(viewModel);
 
             // if launched via right-click with a file path, pre-fill it.

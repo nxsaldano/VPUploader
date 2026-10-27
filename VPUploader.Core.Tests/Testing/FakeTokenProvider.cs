@@ -8,7 +8,9 @@ public class FakeTokenProvider : ITokenProvider
     {
         _token = token;
     }
-
+    
+    public bool HasSavedLogin => true;
+    public Task SignInAsync() => Task.CompletedTask;
     public Task<string> GetValidAccessTokenAsync() => Task.FromResult(_token);
     
 }

@@ -8,7 +8,10 @@ namespace VPUploader.Core;
 
 public class PinterestClient
 {
-    private const string BaseUrl = "https://api.pinterest.com/v5";
+    // this is the BaseUrl to post in production
+    // private const string BaseUrl = "https://api.pinterest.com/v5";
+    
+    private const string BaseUrl = "https://api-sandbox.pinterest.com/v5";
     
     private readonly ITokenProvider _tokenProvider;
     private readonly HttpClient _http;
@@ -52,6 +55,26 @@ public class PinterestClient
         while (!string.IsNullOrEmpty(bookmark));
 
         return boards;
+    }
+    
+    public async Task<Board> CreateBoardAsync(string name)
+    {
+        string json = JsonSerializer.Serialize(new { name }, JsonOpts);
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/boards")
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/json"),
+        };
+        await AttachAuthAsync(request);
+
+        using var response = await _http.SendAsync(request);
+        string body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Failed to create board ({(int)response.StatusCode}): {body}");
+
+        return JsonSerializer.Deserialize<Board>(body, JsonOpts)
+               ?? throw new InvalidOperationException("Pinterest returned an empty board.");
     }
 
     private async Task AttachAuthAsync(HttpRequestMessage request)

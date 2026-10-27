@@ -21,7 +21,14 @@ public partial class MainWindow : FluentWindow
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        // await _viewModel.LoadBoardsAsync();
+        try
+        {
+            await _viewModel.InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            _viewModel.StatusMessage = $"Could not load boards: {ex.Message}";
+        }
     }
 
     private void ChooseImage_Click(object sender, RoutedEventArgs e)

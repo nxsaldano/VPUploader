@@ -44,7 +44,7 @@ public class PinterestClientTests
 
             var request = handler.Requests[0];
             Assert.Equal(HttpMethod.Post, request.Method);
-            Assert.Equal("https://api.pinterest.com/v5/pins", request.RequestUri!.ToString());
+            Assert.Equal("https://api-sandbox.pinterest.com/v5/pins", request.RequestUri!.ToString());
             Assert.Equal("Bearer", request.Headers.Authorization!.Scheme);
             Assert.Equal("token-abc", request.Headers.Authorization!.Parameter);
 
