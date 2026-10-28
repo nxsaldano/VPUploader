@@ -6,6 +6,10 @@ Website: [nxchos.dev.ar](https://nxchos.dev.ar) · Source: [github.com/nxsaldano
 
 ![App screenshot](screenshots/screenshot1.png)
 
+## Download
+
+Grab the latest build from the [Releases page](https://github.com/nxsaldano/VPUploader/releases).
+
 ## Features
 
 - Pick an image and upload it directly to a Pinterest board
