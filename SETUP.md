@@ -61,12 +61,7 @@ these tests to pass.
    `127.0.0.1`.
 2. Create `VPUploader.App/appsettings.local.json` (gitignored) with your App ID
    and App secret - see the README.
-3. **Trial access is a sandbox.** Pinterest only lets Trial apps call
-   `https://api-sandbox.pinterest.com`, and sandbox tokens come from
-   `https://api-sandbox.pinterest.com/v5/oauth/token`. Pins and boards created
-   there are only visible to the creating account. Both URLs are constants in
-   `PinterestClient.cs` and `AuthService.cs`; switch them back to
-   `api.pinterest.com` once Standard access is approved.
+3. Make sure your app has Standard access. Apps with only Trial access are limited to the sandbox (`api-sandbox.pinterest.com`) and only work for the owner's account.
 4. The sandbox starts with no boards, so `MainViewModel.LoadBoardsAsync`
    temporarily creates a "VPUploader Sandbox" board if the list is empty.
    Remove that block when moving to production.

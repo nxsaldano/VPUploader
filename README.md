@@ -19,9 +19,12 @@ Grab the latest build from the [Releases page](https://github.com/nxsaldano/VPUp
 - Clickable "View pin on Pinterest" link after each successful upload
 - Fluent/Acrylic dark-themed UI (via [WPF-UI](https://github.com/lepoco/wpfui))
 - Right-click "Upload with VPUploader" context-menu entry for image files in Windows Explorer (registered automatically on first launch, no admin rights needed)
-## Current status
+- Create a new board directly from the app
+- Checks GitHub for new versions on startup and links to the download
 
-VPUploader currently runs on Pinterest's **Trial** API access, which is a sandbox: pins and boards created through it are only visible to the account that created them. The app therefore talks to `api-sandbox.pinterest.com`. Standard access (which makes pins publicly visible) is the next milestone.
+## Status
+
+VPUploader has Pinterest Standard API access, so pins you upload appear on your real boards. Releases are on the [Releases page](https://github.com/nxsaldano/VPUploader/releases), and the app tells you when a newer version is available.
 
 ## Architecture
 

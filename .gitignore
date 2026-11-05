@@ -6,3 +6,5 @@ riderModule.iml
 appsettings.local.json
 .idea/
 VPUploader.sln.DotSettings.user
+publish/
+*.zip

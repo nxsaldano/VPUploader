@@ -17,7 +17,7 @@ VPUploader connects to your Pinterest account via Pinterest's own official OAuth
 ## What data is stored, and where
 
 - Your Pinterest refresh token is stored **locally on your own computer only**, encrypted using Windows' built-in Data Protection API (DPAPI), tied to your Windows user account. Short-lived access tokens are kept in memory only while the app is running.
-- No data is ever sent to, stored on, or processed by any server operated by the developer. VPUploader has no backend of its own — it communicates directly and only with Pinterest's official API.
+- No data is ever sent to, stored on, or processed by any server operated by the developer. VPUploader has no backend of its own. It communicates with Pinterest's official API and, on startup, makes one request to GitHub's public API to check whether a newer version is available (no account or personal data is included).
 - Images you choose to upload are sent directly to Pinterest's servers as part of creating a Pin, and are not retained by this app beyond that upload.
 ## Data sharing
 

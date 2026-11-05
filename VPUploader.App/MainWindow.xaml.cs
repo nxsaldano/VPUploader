@@ -24,6 +24,7 @@ public partial class MainWindow : FluentWindow
         try
         {
             await _viewModel.InitializeAsync();
+            await _viewModel.CheckForUpdatesAsync();
         }
         catch (Exception ex)
         {

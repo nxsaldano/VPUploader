@@ -2,7 +2,7 @@
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                  Title="VPUploader" Height="540" Width="500" MinHeight="540" MinWidth="400"
+                  Title="VPUploader" Height="540" Width="500" MinHeight="550" MinWidth="400"
                   Icon="Assets/wacotexas.ico"
                   Loaded="Window_Loaded"
                   ExtendsContentIntoTitleBar="True"
@@ -43,7 +43,27 @@
             <Button Grid.Row="0" Content="Choose Image..." Click="ChooseImage_Click" HorizontalAlignment="Left" Margin="0,0,0,8" />
             <TextBlock Grid.Row="1" Text="{Binding SelectedFilePath}" TextTrimming="CharacterEllipsis" Margin="0,0,0,8" />
 
-            <ComboBox Grid.Row="2" ItemsSource="{Binding Boards}" SelectedItem="{Binding SelectedBoard}" Margin="0,0,0,8" />
+            <StackPanel Grid.Row="2" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0" ItemsSource="{Binding Boards}" SelectedItem="{Binding SelectedBoard}" />
+                    <Button Grid.Column="1" Content="New board" Command="{Binding ToggleNewBoardCommand}" Margin="8,0,0,0" />
+                </Grid>
+
+                <Grid Margin="0,8,0,0"
+                      Visibility="{Binding IsCreatingBoard, Converter={StaticResource BoolToVis}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBox Grid.Column="0" Text="{Binding NewBoardName, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="New board name" />
+                    <Button Grid.Column="1" Content="Create" Command="{Binding CreateBoardCommand}" Margin="8,0,0,0" />
+                </Grid>
+            </StackPanel>
 
             <ui:TextBox Grid.Row="3" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"
                         PlaceholderText="Title (optional)" />
@@ -67,6 +87,11 @@
                 <TextBlock Margin="0,4,0,0"
                            Visibility="{Binding HasPinLink, Converter={StaticResource BoolToVis}}">
                     <Hyperlink Command="{Binding OpenPinCommand}">View pin on Pinterest</Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="0,4,0,0"
+                           Visibility="{Binding HasUpdate, Converter={StaticResource BoolToVis}}">
+                    <Run Text="{Binding UpdateText, Mode=OneWay}" />
+                    <Hyperlink Command="{Binding OpenUpdateCommand}">Download</Hyperlink>
                 </TextBlock>
             </StackPanel>
         </Grid>

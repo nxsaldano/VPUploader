@@ -8,10 +8,11 @@ namespace VPUploader.Core;
 
 public class PinterestClient
 {
-    // this is the BaseUrl to post in production
-    // private const string BaseUrl = "https://api.pinterest.com/v5";
     
-    private const string BaseUrl = "https://api-sandbox.pinterest.com/v5";
+    private const string BaseUrl = "https://api.pinterest.com/v5";
+    
+    // sandbox API
+    // private const string BaseUrl = "https://api-sandbox.pinterest.com/v5";
     
     private readonly ITokenProvider _tokenProvider;
     private readonly HttpClient _http;

@@ -14,14 +14,20 @@ public class MainViewModel : INotifyPropertyChanged
 
     private readonly PinterestClient _client;
     private readonly ITokenProvider _auth;
+    private readonly UpdateChecker _updateChecker;
 
-    public MainViewModel(PinterestClient client, ITokenProvider auth)
+    public MainViewModel(PinterestClient client, ITokenProvider auth, UpdateChecker updateChecker)
     {
         _client = client;
         _auth = auth;
+        _updateChecker = updateChecker;
         UploadCommand = new RelayCommand(async () => await UploadAsync(), () => CanUpload);
         ConnectCommand = new RelayCommand(async () => await ConnectAsync(), () => true);
         OpenPinCommand = new RelayCommand(OpenPin, () => LastPinUrl != null);
+        OpenUpdateCommand = new RelayCommand(OpenUpdate, () => UpdateUrl != null);
+        ToggleNewBoardCommand = new RelayCommand(() => IsCreatingBoard = !IsCreatingBoard, () => true);
+        CreateBoardCommand = new RelayCommand(async () => await CreateBoardAsync(),
+            () => !string.IsNullOrWhiteSpace(NewBoardName));
     }
 
     // ---------- Commands ----------
@@ -29,6 +35,7 @@ public class MainViewModel : INotifyPropertyChanged
     public RelayCommand UploadCommand { get; }
     public RelayCommand ConnectCommand { get; }
     public RelayCommand OpenPinCommand { get; }
+    
 
     // ---------- Sign-in state ----------
 
@@ -73,6 +80,28 @@ public class MainViewModel : INotifyPropertyChanged
             RaiseCanUploadChanged();
         }
     }
+    
+    private string _newBoardName = string.Empty;
+    public string NewBoardName
+    {
+        get => _newBoardName;
+        set
+        {
+            _newBoardName = value;
+            OnPropertyChanged();
+            CreateBoardCommand.RaiseCanExecuteChanged();
+        }
+    }
+
+    private bool _isCreatingBoard;
+    public bool IsCreatingBoard
+    {
+        get => _isCreatingBoard;
+        set { _isCreatingBoard = value; OnPropertyChanged(); }
+    }
+
+    public RelayCommand ToggleNewBoardCommand { get; }
+    public RelayCommand CreateBoardCommand { get; }
 
     // ---------- Pin fields ----------
 
@@ -141,6 +170,29 @@ public class MainViewModel : INotifyPropertyChanged
 
     private bool CanUpload =>
         !IsUploading && SelectedBoard != null && !string.IsNullOrEmpty(SelectedFilePath);
+    
+    private string? _updateText;
+    public string? UpdateText
+    {
+        get => _updateText;
+        set { _updateText = value; OnPropertyChanged(); }
+    }
+
+    private string? _updateUrl;
+    public string? UpdateUrl
+    {
+        get => _updateUrl;
+        set
+        {
+            _updateUrl = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasUpdate));
+        }
+    }
+
+    public bool HasUpdate => UpdateUrl != null;
+
+    public RelayCommand OpenUpdateCommand { get; }
 
     // ---------- Actions ----------
 
@@ -166,8 +218,14 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
     // runs when the Connect button is clicked: opens the browser login
+    private bool _isConnecting;
+
     private async Task ConnectAsync()
     {
+        if (_isConnecting)
+            return;
+
+        _isConnecting = true;
         try
         {
             StatusMessage = "Waiting for Pinterest in your browser...";
@@ -180,16 +238,32 @@ public class MainViewModel : INotifyPropertyChanged
         {
             StatusMessage = $"Could not connect: {ex.Message}";
         }
+        finally
+        {
+            _isConnecting = false;
+        }
+    }
+    
+    private async Task CreateBoardAsync()
+    {
+        try
+        {
+            var board = await _client.CreateBoardAsync(NewBoardName.Trim());
+            Boards.Add(board);
+            SelectedBoard = board;
+            NewBoardName = string.Empty;
+            IsCreatingBoard = false;
+            StatusMessage = $"Board \"{board.Name}\" created.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Could not create board: {ex.Message}";
+        }
     }
 
     public async Task LoadBoardsAsync()
     {
         var boards = await _client.GetBoardsAsync();
-
-        // TEMPORARY: the Pinterest sandbox starts empty, so make a test board.
-        // Remove this once we're on production.
-        if (boards.Count == 0)
-            boards.Add(await _client.CreateBoardAsync("VPUploader Sandbox"));
 
         Boards.Clear();
         foreach (var board in boards)
@@ -231,13 +305,36 @@ public class MainViewModel : INotifyPropertyChanged
 
     private void RaiseCanUploadChanged() => UploadCommand.RaiseCanExecuteChanged();
 
-    private void OpenPin()
+    private void OpenPin() => OpenInBrowser(LastPinUrl);
+    public async Task CheckForUpdatesAsync()
     {
-        if (LastPinUrl == null)
+        try
+        {
+            var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                          ?? new Version(0, 0, 0);
+            var update = await _updateChecker.CheckAsync(current);
+            if (update == null)
+                return;
+
+            UpdateUrl = update.Url;
+            UpdateText = $"Version {update.Version} is available.";
+        }
+        catch
+        {
+            // checking for updates is best-effort: if the user is offline
+            // or GitHub is down, silently do nothing
+        }
+    }
+
+    private void OpenUpdate() => OpenInBrowser(UpdateUrl);
+
+    private static void OpenInBrowser(string? url)
+    {
+        if (url == null)
             return;
 
         // UseShellExecute makes Windows open the URL in the default browser
-        Process.Start(new ProcessStartInfo(LastPinUrl) { UseShellExecute = true });
+        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
     }
     
     // ---------- Change notification (INotifyPropertyChanged) ----------

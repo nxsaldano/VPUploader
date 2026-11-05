@@ -9,14 +9,14 @@ namespace VPUploader.Core;
 public class AuthService : ITokenProvider
 {
     private const string AuthorizeUrl = "https://www.pinterest.com/oauth/";
+    private const string TokenUrl = "https://api.pinterest.com/v5/oauth/token";
     
-    // we use different tokens for production and sandbox
-    // private const string TokenUrl = "https://api.pinterest.com/v5/oauth/token";
-    
-    private const string TokenUrl = "https://api-sandbox.pinterest.com/v5/oauth/token";
+    // sandbox token
+    // private const string TokenUrl = "https://api-sandbox.pinterest.com/v5/oauth/token";
     
     private const string RedirectUri = "http://localhost:8756/callback/";
     private const string Scopes = "boards:read,boards:write,pins:read,pins:write";
+    private static readonly TimeSpan LoginTimeout = TimeSpan.FromMinutes(3);
     
     private readonly string _clientId;
     private readonly string _clientSecret;
@@ -80,10 +80,22 @@ public class AuthService : ITokenProvider
 		// opens the default browser into authUrl
     	Process.Start(new ProcessStartInfo(authUrl) { UseShellExecute = true });
 
-		// this waits forever until the request comes
-		// TODO  
-		// fix this with CancellationToken
-    	var context = await listener.GetContextAsync();
+	    // after LoginTimeout, the timer stops the listener, which makes the
+		// pending GetContextAsync below fail instead of waiting forever
+	    using var timeout = new CancellationTokenSource(LoginTimeout);
+	    using var stopListenerOnTimeout = timeout.Token.Register(listener.Stop);
+
+	    HttpListenerContext context;
+	    try
+	    {
+		    context = await listener.GetContextAsync();
+	    }
+	    catch (Exception ex) when (timeout.IsCancellationRequested &&
+	                               ex is HttpListenerException or ObjectDisposedException)
+	    {
+		    throw new TimeoutException("Login timed out. Please try again.");
+	    }
+	    
     	var query = context.Request.QueryString;
 
     	string? returnedState = query["state"];
